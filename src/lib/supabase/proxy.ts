@@ -64,7 +64,6 @@ export async function updateSession(request: NextRequest) {
   const isPublicRoute =
     pathname === "/login" ||
     pathname === "/signup" ||
-    pathname === "/auth/callback" ||
     pathname === "/auth/signout";
 
   const claims = data?.claims;

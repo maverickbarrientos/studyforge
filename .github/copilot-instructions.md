@@ -30,7 +30,7 @@ This is a Next.js App Router monolith. The quiz flow runs from file upload and f
 - Model quiz format, questions, and answer options in Prisma; keep answer explanations with their question. Do not add saved-quiz history or a save flow until the product scope is updated.
 - Use Supabase Auth with `@supabase/ssr` for email/password authentication. Create request-scoped clients in `src/lib/supabase/`; do not use service-role keys in browser or request-facing code.
 - Keep login and signup public. `proxy.ts` refreshes and verifies sessions, redirects unauthenticated requests to `/login`, and redirects authenticated visitors away from the login/signup pages. Use `requireAuthenticatedUser()` for defense in depth in protected server pages and route handlers.
-- Handle Supabase email-confirmation callbacks at `/auth/callback`. Logout is a same-origin `POST` to `/auth/signout`; it signs out the Supabase session and redirects to `/login`.
+- Supabase email confirmation is disabled so successful signup immediately establishes a session. Logout is a same-origin `POST` to `/auth/signout`; it signs out the Supabase session and redirects to `/login`.
 - OAuth providers, role-based authorization, and saved-quiz behavior are out of scope.
 
 ## Build, test, and lint
@@ -45,7 +45,7 @@ This is a Next.js App Router monolith. The quiz flow runs from file upload and f
 - `npm run db:deploy` applies committed migrations in deployment environments.
 - `npm run db:studio` opens Prisma Studio.
 - Configure `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local` for auth.
-- Configure Supabase Auth's Site URL and redirect allow list to include the local app origin and `/auth/callback`; add the deployed callback URL when deploying.
+- Disable Supabase Auth email confirmation in the project dashboard; configure the Supabase Auth Site URL for the app origin.
 - No test runner or single-test command is configured yet.
 
 ## Repository-specific conventions
@@ -57,8 +57,8 @@ This is a Next.js App Router monolith. The quiz flow runs from file upload and f
 - The Prisma schema models quiz format, ordered questions, optional answers/explanations, and ordered multiple-choice answer options. Do not add uploaded file contents or learner response/history tables without a product-scope update.
 - Map the UI quiz-format values to Prisma's `QuizFormat` enum at the persistence boundary. Keep the schema as infrastructure only: do not wire generation to save/load/history behavior until saved quizzes enter product scope.
 - Use Supabase Auth-managed identities and cookie sessions; do not create a duplicate Prisma user/password table. Never trust auth cookies without server-side Supabase verification.
-- The Next.js 16 `proxy.ts` refreshes Supabase cookies and verifies identity with `auth.getClaims()`. Keep the `/login`, `/signup`, `/auth/callback`, and `/auth/signout` routes public; protect app pages and private endpoints, and call `requireAuthenticatedUser()` again inside protected server-side handlers.
+- The Next.js 16 `proxy.ts` refreshes Supabase cookies and verifies identity with `auth.getClaims()`. Keep the `/login`, `/signup`, and `/auth/signout` routes public; protect app pages and private endpoints, and call `requireAuthenticatedUser()` again inside protected server-side handlers.
 - Treat `AuthSessionMissingError` from `getClaims()`/`getUser()` as an unauthenticated request and redirect to `/login`; it is not an internal server error. Continue to surface other verification errors.
-- Map Supabase sign-in errors accurately (for example, distinguish an unconfirmed email from invalid credentials) and log only error code/name/status, never passwords, tokens, or email addresses.
+- Map Supabase sign-in errors accurately and log only error code/name/status, never passwords, tokens, or email addresses.
 - `src/lib/supabase/server.ts` creates a request-scoped server client. Only server actions and auth route handlers that need to mutate sessions should request writable cookies.
 - Keep redirects same-origin using `getSafeRedirectPath()`; do not forward untrusted `next` values directly to `redirect()`.

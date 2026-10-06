@@ -5,7 +5,6 @@ import { getSafeRedirectPath } from "@/features/auth/redirect-path";
 type SignupPageProps = {
   searchParams: Promise<{
     error?: string;
-    message?: string;
     next?: string;
   }>;
 };
@@ -19,7 +18,6 @@ export default async function SignupPage({ searchParams }: SignupPageProps) {
       <main className="px-5 py-12 sm:py-16">
         <AuthForm
           error={params.error}
-          message={params.message}
           mode="signup"
           nextPath={getSafeRedirectPath(params.next)}
         />

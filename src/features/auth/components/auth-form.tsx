@@ -4,16 +4,12 @@ import { login, signup } from "@/app/auth/actions";
 type AuthFormProps = {
   mode: "login" | "signup";
   error?: string;
-  message?: string;
   nextPath: string;
 };
 
 const errorMessages: Record<string, string> = {
-  "confirmation-failed": "That confirmation link is invalid or has expired. Try signing in or signing up again.",
-  "email-not-confirmed": "Confirm your email address using the link we sent before logging in.",
   "invalid-credentials": "Email or password is incorrect.",
   "invalid-input": "Enter a valid email and password of at least 6 characters.",
-  "invalid-origin": "We couldn’t verify this request. Refresh the page and try again.",
   "login-failed": "We couldn’t sign you in right now. Try again in a moment.",
   "password-mismatch": "The passwords do not match.",
   "signup-failed": "We couldn’t create your account. Check the email and try again.",
@@ -23,7 +19,6 @@ const errorMessages: Record<string, string> = {
 export function AuthForm({
   mode,
   error,
-  message,
   nextPath,
 }: AuthFormProps) {
   const isSignup = mode === "signup";
@@ -52,16 +47,6 @@ export function AuthForm({
           role="alert"
         >
           {errorMessages[error] ?? "Authentication failed. Please try again."}
-        </p>
-      )}
-
-      {message === "check-email" && (
-        <p
-          aria-live="polite"
-          className="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
-          role="status"
-        >
-          Check your email for a link to confirm your account.
         </p>
       )}
 

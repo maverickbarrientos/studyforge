@@ -60,14 +60,14 @@ NEXT_PUBLIC_SUPABASE_URL="https://<project-ref>.supabase.co"
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY="<supabase-publishable-key>"
 ```
 
-In Supabase Auth URL configuration, set the local Site URL (for example, `http://localhost:3000`) and allow the matching `/auth/callback` URL. Add the deployed callback URL to the redirect allow list when deploying. Signups may require email confirmation according to the Supabase project's Auth settings.
+In the Supabase dashboard, disable **Confirm email** under the email provider's Auth settings so signup immediately returns an authenticated session. Set the Site URL to the app origin (for example, `http://localhost:3000`). No email-confirmation callback or redirect allow-list entry is used.
 
 `/login` and `/signup` are public. The Next.js 16 `proxy.ts` refreshes and verifies the cookie session and redirects unauthenticated requests to `/login`; protected server pages and route handlers should also use `requireAuthenticatedUser()` from `src/lib/supabase/require-user.ts`. The `/auth/signout` route accepts same-origin `POST` requests, ends the Supabase session, and redirects to login. OAuth is not configured.
 
 ## Architecture
 
 - `src/app/` contains Next.js App Router entry points and global styles.
-- `src/app/auth/` contains public server actions and Supabase callback/logout route handlers.
+- `src/app/auth/` contains public server actions and the logout route handler.
 - `src/app/login/` and `src/app/signup/` contain the public auth pages.
 - `src/features/auth/` contains shared authentication UI and redirect validation.
 - `src/lib/supabase/` contains request-scoped clients and session/identity helpers.

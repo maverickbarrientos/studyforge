@@ -1,6 +1,5 @@
 "use server";
 
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getSafeRedirectPath } from "@/features/auth/redirect-path";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -28,13 +27,6 @@ export async function login(formData: FormData) {
       name: error.name,
       status: error.status,
     });
-
-    if (
-      error.code === "email_not_confirmed" ||
-      error.message.toLowerCase().includes("email not confirmed")
-    ) {
-      redirect("/login?error=email-not-confirmed");
-    }
 
     if (error.status === 429) {
       redirect("/login?error=too-many-attempts");
@@ -64,25 +56,15 @@ export async function signup(formData: FormData) {
     redirect("/signup?error=password-mismatch");
   }
 
-  const requestHeaders = await headers();
-  const origin = requestHeaders.get("origin");
-  const host = requestHeaders.get("host");
-
-  if (!origin || !host || new URL(origin).host !== host) {
-    redirect("/signup?error=invalid-origin");
-  }
-
-  const callbackUrl = new URL("/auth/callback", origin);
-  callbackUrl.searchParams.set("next", next);
-
   const supabase = await createSupabaseServerClient({ writableCookies: true });
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: { emailRedirectTo: callbackUrl.toString() },
-  });
+  const { data, error } = await supabase.auth.signUp({ email, password });
 
   if (error) {
+    console.error("Supabase password signup failed.", {
+      code: error.code,
+      name: error.name,
+      status: error.status,
+    });
     redirect("/signup?error=signup-failed");
   }
 
@@ -90,5 +72,5 @@ export async function signup(formData: FormData) {
     redirect(next);
   }
 
-  redirect("/signup?message=check-email");
+  redirect("/signup?error=signup-failed");
 }
