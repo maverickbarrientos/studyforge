@@ -13,22 +13,25 @@ Saving quizzes and authentication are explicitly out of scope.
 
 ## Architecture context
 
-The specified flow runs from file upload through quiz-format selection and LLM generation to answering and feedback. Keep these responsibilities consistent as the implementation takes shape; consult the product spec before adding product behavior. The repository does not yet contain application code or a defined framework, so inspect the existing implementation before choosing or describing technology-specific patterns.
+This is a Next.js App Router monolith. The quiz flow runs from file upload and format selection through LLM generation to answering and feedback. Keep those responsibilities within the quiz feature boundary; route entry points belong in `src/app/`.
 
 ## Stack and architecture
 
-- Use Next.js file based routing and monolith architecture.
-- Use feature-based folder sturcture, storing every feature inside the feature folder.
-- Global components that is shared across the app lives on the src/components folder.
-- Use shadcn for reusable components paired with TailwindCSS for styling.
-
-- Monolith Architecture with Next.js
+- Use Next.js file-based routing with the App Router and TypeScript.
+- Put feature-specific UI and domain logic under `src/features/<feature>/`.
+- Put components shared across features under `src/components/`; shadcn/ui primitives belong in `src/components/ui/`.
+- Use Tailwind CSS for styling and shadcn/ui for reusable interface primitives.
+- Keep quiz-format/domain types with the quiz feature. Add upload parsing and LLM integration behind feature-level service boundaries rather than in route components.
 
 ## Build, test, and lint
 
-No build, test, or lint commands are defined in the repository yet. There are also no configured test files or single-test command.
+- `npm run dev` starts the local Next.js development server.
+- `npm run lint` runs ESLint.
+- `npm run build` creates the production build.
+- No test runner or single-test command is configured yet.
 
 ## Repository-specific conventions
 
 - Keep implementation aligned with the scope in `docs/SPEC.md`; do not add quiz persistence or authentication without an updated product decision.
-- Treat file formats and quiz types listed in the spec as the current product requirements, not as evidence of a particular library or framework.
+- Treat supported file formats and quiz types listed in the spec as product requirements, not as evidence of a particular parsing or AI provider.
+- Generation must remain clearly unimplemented until an actual upload-processing and LLM service is wired; do not present placeholder feedback as a generated quiz.
