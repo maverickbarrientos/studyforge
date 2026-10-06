@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import { isAuthSessionMissingError } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 import { getSafeRedirectPath } from "@/features/auth/redirect-path";
 
@@ -55,7 +56,7 @@ export async function updateSession(request: NextRequest) {
   });
 
   const { data, error } = await supabase.auth.getClaims();
-  if (error) {
+  if (error && !isAuthSessionMissingError(error)) {
     throw new Error("Unable to verify the Supabase session.", { cause: error });
   }
 

@@ -10,11 +10,14 @@ type AuthFormProps = {
 
 const errorMessages: Record<string, string> = {
   "confirmation-failed": "That confirmation link is invalid or has expired. Try signing in or signing up again.",
+  "email-not-confirmed": "Confirm your email address using the link we sent before logging in.",
   "invalid-credentials": "Email or password is incorrect.",
   "invalid-input": "Enter a valid email and password of at least 6 characters.",
   "invalid-origin": "We couldn’t verify this request. Refresh the page and try again.",
+  "login-failed": "We couldn’t sign you in right now. Try again in a moment.",
   "password-mismatch": "The passwords do not match.",
   "signup-failed": "We couldn’t create your account. Check the email and try again.",
+  "too-many-attempts": "There have been too many sign-in attempts. Wait a little before trying again.",
 };
 
 export function AuthForm({

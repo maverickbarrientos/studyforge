@@ -58,5 +58,7 @@ This is a Next.js App Router monolith. The quiz flow runs from file upload and f
 - Map the UI quiz-format values to Prisma's `QuizFormat` enum at the persistence boundary. Keep the schema as infrastructure only: do not wire generation to save/load/history behavior until saved quizzes enter product scope.
 - Use Supabase Auth-managed identities and cookie sessions; do not create a duplicate Prisma user/password table. Never trust auth cookies without server-side Supabase verification.
 - The Next.js 16 `proxy.ts` refreshes Supabase cookies and verifies identity with `auth.getClaims()`. Keep the `/login`, `/signup`, `/auth/callback`, and `/auth/signout` routes public; protect app pages and private endpoints, and call `requireAuthenticatedUser()` again inside protected server-side handlers.
+- Treat `AuthSessionMissingError` from `getClaims()`/`getUser()` as an unauthenticated request and redirect to `/login`; it is not an internal server error. Continue to surface other verification errors.
+- Map Supabase sign-in errors accurately (for example, distinguish an unconfirmed email from invalid credentials) and log only error code/name/status, never passwords, tokens, or email addresses.
 - `src/lib/supabase/server.ts` creates a request-scoped server client. Only server actions and auth route handlers that need to mutate sessions should request writable cookies.
 - Keep redirects same-origin using `getSafeRedirectPath()`; do not forward untrusted `next` values directly to `redirect()`.
