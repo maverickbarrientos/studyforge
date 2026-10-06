@@ -1,3 +1,6 @@
+-- CreateSchema
+CREATE SCHEMA IF NOT EXISTS "public";
+
 -- CreateEnum
 CREATE TYPE "QuizFormat" AS ENUM ('MULTIPLE_CHOICE', 'FLASH_CARDS', 'ESSAY');
 
