@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { quizFormats, type QuizFormat } from "@/features/quiz/types";
 
@@ -20,8 +19,7 @@ export function QuizBuilder() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f8f6] text-stone-900">
-      <SiteHeader />
+    <div className="min-h-[calc(100vh-4rem)] bg-[#f8f8f6] text-stone-900">
       <main className="mx-auto max-w-4xl px-5 py-12 sm:px-8 sm:py-16">
         <div className="mx-auto max-w-2xl text-center">
           <span className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-indigo-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-indigo-700">
