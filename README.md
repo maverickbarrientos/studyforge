@@ -22,6 +22,33 @@ npm run build
 
 There is no test runner configured yet.
 
+## Database
+
+StudyForge uses Supabase PostgreSQL through Prisma. Copy `.env.example` to `.env` and replace its placeholders with connection strings from the Supabase project’s database settings:
+
+- `DATABASE_URL` is the Supavisor transaction-pooler URL for application connections (port `6543`, with `pgbouncer=true`).
+- `DIRECT_URL` is a direct database connection URL for Prisma migrations and other CLI commands. If direct connectivity is unavailable, use Supabase’s session pooler URL (port `5432`).
+
+URL-encode special characters in the database password before placing it in either connection string.
+
+Install dependencies and generate Prisma Client:
+
+```bash
+npm install
+npm run db:generate
+```
+
+Apply schema changes to a development database and open Prisma Studio with:
+
+```bash
+npm run db:format
+npm run db:validate
+npm run db:migrate
+npm run db:studio
+```
+
+For deployment, apply committed migrations with `npm run db:deploy`. Do not commit `.env` or put Supabase credentials in source control.
+
 ## Architecture
 
 - `src/app/` contains Next.js App Router entry points and global styles.
@@ -29,5 +56,8 @@ There is no test runner configured yet.
 - `src/components/` contains components shared across features.
 - `src/components/ui/` is the shadcn/ui component destination.
 - `src/lib/` is the shadcn utility destination.
+- `prisma/schema.prisma` defines the PostgreSQL data model.
 
-Keep upload and quiz-generation services behind the quiz feature boundary as they are implemented. Quiz persistence and authentication are out of scope per [`docs/SPEC.md`](docs/SPEC.md).
+Keep upload and quiz-generation services behind the quiz feature boundary as they are implemented. Authentication and saved-quiz behavior remain out of scope per [`docs/SPEC.md`](docs/SPEC.md); the schema is infrastructure and does not add a quiz-saving interface or flow.
+
+The database model uses a quiz format enum, ordered questions with optional canonical answers and explanations, and ordered multiple-choice options with correctness flags. Uploaded file content and learner responses are not stored in this schema.
