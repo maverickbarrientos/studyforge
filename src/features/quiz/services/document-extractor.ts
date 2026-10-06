@@ -47,7 +47,9 @@ export async function extractDocumentText(file: File) {
   } catch (error) {
     console.error(
       "Document extraction failed:",
-      error instanceof Error ? error.name : "Unknown error",
+      error instanceof Error
+        ? `${error.name}: ${error.message}`
+        : "Unknown error",
     );
     throw new DocumentValidationError(
       "The file could not be read. Check that it is a valid PDF, DOCX, or PPTX.",
