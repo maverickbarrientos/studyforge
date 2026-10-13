@@ -40,6 +40,8 @@ npm install
 npm run db:generate
 ```
 
+`npm run build` regenerates Prisma Client before the Next.js production build, so the ignored generated client is available in clean deployment checkouts.
+
 Apply schema changes to a development database and open Prisma Studio with:
 
 ```bash
